@@ -86,19 +86,27 @@ public final class SlimeUtils {
         return slimeWorld;
     }
 
-    public static void deleteWorld(Island island, World.Environment environment){
+public static void deleteWorld(Island island, World.Environment environment){
         String worldName = getWorldName(island, environment);
 
         WorldData worldData = ConfigManager.getWorldConfig().getWorlds().get(worldName);
-
         unloadWorld(worldName);
-
-        try {
-            slimePlugin.getLoader(worldData.getDataSource()).deleteWorld(worldName);
-        }catch (Exception ex){
-            ex.printStackTrace();
-        }
+       
     }
+    
+    public boolean deleteWorld(File path) {
+      if(path.exists()) {
+          File files[] = path.listFiles();
+          for(int i=0; i<files.length; i++) {
+              if(files[i].isDirectory()) {
+                  deleteWorld(files[i]);
+              } else {
+                  files[i].delete();
+              }
+          }
+      }
+      return(path.delete());
+}
 
     public static boolean isIslandsWorld(String worldName){
         String[] nameSections = worldName.split("_");
